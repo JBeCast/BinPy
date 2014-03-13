@@ -54,8 +54,8 @@ class Gate(object):
         return {'inputs': self.in_states, 'output': self.output()}
 
     def getTaps(self):
-        return {'output': self.output.name,
-                'inputs': [i.name for i in self.inputs]}
+        return {'inputs': [i.name for i in self.inputs],
+                'output': self.output.name}
 
 
 
