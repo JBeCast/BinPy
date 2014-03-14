@@ -85,32 +85,32 @@ def xor_alg(inputs):
 
 
 class AND(Gate):
-    def __init__(self, output, *inputs):
-        Gate.__init__(self, output, *inputs)
+    def __init__(self, name='', *taps):
+        Gate.__init__(self, name='', *taps)
 
     def _calc_output(self, in_states):
         return and_alg(in_states)
 
 
 class OR(Gate):
-    def __init__(self, output, *inputs):
-        Gate.__init__(self, output, *inputs)
+    def __init__(self, name='', *taps):
+        Gate.__init__(self, name='', *taps)
 
     def _calc_output(self, in_states):
         return or_alg(in_states)
 
 
 class NOT(Gate):
-    def __init__(self, output, *inputs):
-        Gate.__init__(self, output, *inputs)
+    def __init__(self, name='', *taps):
+        Gate.__init__(self, name='', *taps)
 
     def _calc_output(self, in_states):
         return abs(in_states[0]-1) if in_states[0] in (0,1) else 3
 
 
 class NAND(Gate):
-    def __init__(self, output, *inputs):
-        Gate.__init__(self, output, *inputs)
+    def __init__(self, name='', *taps):
+        Gate.__init__(self, name='', *taps)
 
     def _calc_output(self, in_states):
         temp = and_alg(in_states)
@@ -118,8 +118,8 @@ class NAND(Gate):
 
 
 class NOR(Gate):
-    def __init__(self, output, *inputs):
-        Gate.__init__(self, output, *inputs)
+    def __init__(self, name='', *taps):
+        Gate.__init__(self, name='', *taps)
 
     def _calc_output(self, in_states):
         temp = or_alg(in_states)
@@ -127,16 +127,16 @@ class NOR(Gate):
 
 
 class XOR(Gate):
-    def __init__(self, output, *inputs):
-        Gate.__init__(self, output, *inputs)
+    def __init__(self, name='', *taps):
+        Gate.__init__(self, name='', *taps)
 
     def _calc_output(self, in_states):
         return xor_alg(in_states)
 
 
 class XNOR(Gate):
-    def __init__(self, output, *inputs):
-        Gate.__init__(self, output, *inputs)
+    def __init__(self, name='', *taps):
+        Gate.__init__(self, name='', *taps)
 
     def _calc_output(self, in_states):
         temp = xor_alg(in_states)
