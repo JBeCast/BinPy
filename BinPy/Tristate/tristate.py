@@ -4,7 +4,7 @@ class Buffer(Gate):
     def __init__(self, c, b, a):
         Gate.__init__(self, c, b, a)
 
-    def calc_output(self, in_states):
+    def _calc_output(self, in_states):
         if self.inputs[0] == 0:
             return 2
         elif self.inputs[0] == 1:

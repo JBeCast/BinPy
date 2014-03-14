@@ -17,7 +17,7 @@ class Gate(object):
 
     def trigger(self):
         self.in_states = [i.state for i in self.inputs]
-        out_state = self.calc_output(self.in_states)
+        out_state = self._calc_output(self.in_states)
         if out_state != self.output.state:
             self.output.set(out_state)
 
@@ -84,7 +84,7 @@ class AND(Gate):
     def __init__(self, output, *inputs):
         Gate.__init__(self, output, *inputs)
 
-    def calc_output(self, in_states):
+    def _calc_output(self, in_states):
         return and_alg(in_states)
 
 
@@ -92,7 +92,7 @@ class OR(Gate):
     def __init__(self, output, *inputs):
         Gate.__init__(self, output, *inputs)
 
-    def calc_output(self, in_states):
+    def _calc_output(self, in_states):
         return or_alg(in_states)
 
 
@@ -100,7 +100,7 @@ class NOT(Gate):
     def __init__(self, output, *inputs):
         Gate.__init__(self, output, *inputs)
 
-    def calc_output(self, in_states):
+    def _calc_output(self, in_states):
         return abs(in_states[0]-1) if in_states[0] in (0,1) else 3
 
 
@@ -108,7 +108,7 @@ class NAND(Gate):
     def __init__(self, output, *inputs):
         Gate.__init__(self, output, *inputs)
 
-    def calc_output(self, in_states):
+    def _calc_output(self, in_states):
         temp = and_alg(in_states)
         return abs(temp-1) if temp in (0,1) else temp
 
@@ -117,7 +117,7 @@ class NOR(Gate):
     def __init__(self, output, *inputs):
         Gate.__init__(self, output, *inputs)
 
-    def calc_output(self, in_states):
+    def _calc_output(self, in_states):
         temp = or_alg(in_states)
         return abs(temp-1) if temp in (0,1) else temp
 
@@ -126,7 +126,7 @@ class XOR(Gate):
     def __init__(self, output, *inputs):
         Gate.__init__(self, output, *inputs)
 
-    def calc_output(self, in_states):
+    def _calc_output(self, in_states):
         return xor_alg(in_states)
 
 
@@ -134,6 +134,6 @@ class XNOR(Gate):
     def __init__(self, output, *inputs):
         Gate.__init__(self, output, *inputs)
 
-    def calc_output(self, in_states):
+    def _calc_output(self, in_states):
         temp = xor_alg(in_states)
         return abs(temp-1) if temp in (0,1) else temp
