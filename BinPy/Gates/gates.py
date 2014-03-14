@@ -28,9 +28,9 @@ class Gate(object):
             raise Exception("Feedback not allowed")
         if isinstance(self, NOT):
             if len(inputs) != 1:
-                raise Exception("NOT Gate take only one input")
+                raise Exception("NOT Gate takes only one input")
         elif len(inputs) < 2:
-                raise Exception("At least 2 inputs expected")
+            raise Exception("At least 2 inputs expected")
         self.disconnect()
         self.inputs = inputs
         self.output = output
@@ -40,15 +40,18 @@ class Gate(object):
         self.trigger()
 
     def disconnect(self):
-        if self.output and self in self.output.connections['output']:
-            self.output.connections['output'].remove(self)
-        if self.output and self in self.output.connections['input']:
-            self.output.connections['input'].remove(self)
+        if not self.output is None:
+            if self in self.output.connections['output']:
+                self.output.connections['output'].remove(self)
+            if self in self.output.connections['input']:
+                self.output.connections['input'].remove(self)
         for i in range(len(self.inputs)):
             if self in self.inputs[i].connections['input']:
                 self.inputs[i].connections['input'].remove(self)
             if self in self.inputs[i].connections['output']:
                 self.inputs[i].connections['output'].remove(self)
+        self.inputs = []
+        self.output = None
 
     def getStates(self):
         return {'inputs': self.in_states, 'output': self.output()}
