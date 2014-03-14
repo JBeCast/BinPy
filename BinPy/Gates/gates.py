@@ -18,7 +18,7 @@ class Gate(object):
     def trigger(self):
         self.in_states = [i.state for i in self.inputs]
         out_state = self._calc_output(self.in_states)
-        if out_state != self.output.state:
+        if out_state != self.output():
             self.output.set(out_state)
 
     def connect(self, *taps):
@@ -59,6 +59,10 @@ class Gate(object):
     def getTaps(self):
         return {'inputs': [i.name for i in self.inputs],
                 'output': self.output.name}
+
+    def info(self):
+        print "inputs:", ["%s(%d)" %(i.name, i()) for i in self.inputs]
+        print "output:", "%s(%d)" %(self.output.name, self.output())
 
 
 

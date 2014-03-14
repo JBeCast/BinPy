@@ -1,8 +1,8 @@
 from BinPy.Gates import *
 
 class Buffer(Gate):
-    def __init__(self, c, b, a):
-        Gate.__init__(self, c, b, a)
+    def __init__(self, a, b, c):
+        Gate.__init__(self, a, b, c)
 
     def _calc_output(self, in_states):
         if self.inputs[0] == 0:

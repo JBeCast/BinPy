@@ -6,7 +6,6 @@ class Connector:
             # To store all the taps onto this connection
         self.state = state  # To store the state of the connection
         self.name = name
-        self.oldstate = None
 
     def tap(self, element, mode):
         if element not in self.connections[mode]:
