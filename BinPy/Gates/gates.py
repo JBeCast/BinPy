@@ -16,7 +16,7 @@ class Gate(object):
         self.connect(*taps)
 
     def trigger(self):
-        self.in_states = [i.state for i in self.inputs]
+        self.in_states = [i() for i in self.inputs]
         out_state = self._calc_output(self.in_states)
         if out_state != self.output():
             self.output.set(out_state)
