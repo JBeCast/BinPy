@@ -7,12 +7,21 @@ class Gate(object):
     Base Class implementing all common functions used by Logic gates
     """
 
-    def __init__(self, name='', *taps):
-        is_connector(*taps)
-        self.name = name
-        self.output = None
+    def __init__(self, min_inputs, max_inputs, *args):
+        self._args = list(args)
+        self.name = ''
         self.inputs = []
-        self.connect(*taps)
+        self.output = None
+        self._check_args()
+        self.connect(*self._args)
+
+    def _check_args(self):
+        if isinstance(self._args[0], str):
+            self.name = self._args[0]
+            self._args = self._args[1:]
+            print self._args
+        for i in self._args:
+            is_connector(i)
 
     def trigger(self):
         in_states = [i() for i in self.inputs]
@@ -77,32 +86,32 @@ def xor_alg(inputs):
 
 
 class AND(Gate):
-    def __init__(self, name='', *taps):
-        Gate.__init__(self, name, *taps)
+    def __init__(self, *args):
+        Gate.__init__(self, 2, None, *args)
 
     def _calc_output(self, in_states):
         return and_alg(in_states)
 
 
 class OR(Gate):
-    def __init__(self, name='', *taps):
-        Gate.__init__(self, name, *taps)
+    def __init__(self, *args):
+        Gate.__init__(self, 2, None, *args)
 
     def _calc_output(self, in_states):
         return or_alg(in_states)
 
 
 class NOT(Gate):
-    def __init__(self, name='', *taps):
-        Gate.__init__(self, name, *taps)
+    def __init__(self, *args):
+        Gate.__init__(self, 1, 1, *args)
 
     def _calc_output(self, in_states):
         return abs(in_states[0]-1) if in_states[0] in (0,1) else 3
 
 
 class NAND(Gate):
-    def __init__(self, name='', *taps):
-        Gate.__init__(self, name, *taps)
+    def __init__(self, *args):
+        Gate.__init__(self, 2, None, *args)
 
     def _calc_output(self, in_states):
         temp = and_alg(in_states)
@@ -110,8 +119,8 @@ class NAND(Gate):
 
 
 class NOR(Gate):
-    def __init__(self, name='', *taps):
-        Gate.__init__(self, name, *taps)
+    def __init__(self, *args):
+        Gate.__init__(self, 2, None, *args)
 
     def _calc_output(self, in_states):
         temp = or_alg(in_states)
@@ -119,16 +128,16 @@ class NOR(Gate):
 
 
 class XOR(Gate):
-    def __init__(self, name='', *taps):
-        Gate.__init__(self, name, *taps)
+    def __init__(self, *args):
+        Gate.__init__(self, 2, None, *args)
 
     def _calc_output(self, in_states):
         return xor_alg(in_states)
 
 
 class XNOR(Gate):
-    def __init__(self, name='', *taps):
-        Gate.__init__(self, name, *taps)
+    def __init__(self, *args):
+        Gate.__init__(self, 2, None, *args)
 
     def _calc_output(self, in_states):
         temp = xor_alg(in_states)
