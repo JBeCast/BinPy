@@ -35,11 +35,8 @@ class Gate(object):
         output = list(taps)[-1]
         if output in inputs:
             raise Exception("Feedback not allowed")
-        if isinstance(self, NOT):
-            if len(inputs) != 1:
-                raise Exception("NOT Gate takes only one input")
-        elif len(inputs) < 2:
-            raise Exception("At least 2 inputs expected")
+        if not self._min_inputs <= len(inputs) <= self._max_inputs:
+            raise Exception("Wrong number of inputs provided")
         self.disconnect()
         self.inputs = inputs
         self.output = output
@@ -88,7 +85,7 @@ def xor_alg(inputs):
 
 class AND(Gate):
     def __init__(self, *args):
-        Gate.__init__(self, 2, None, *args)
+        Gate.__init__(self, 2, 8, *args)
 
     def _calc_output(self, in_states):
         return and_alg(in_states)
@@ -96,7 +93,7 @@ class AND(Gate):
 
 class OR(Gate):
     def __init__(self, *args):
-        Gate.__init__(self, 2, None, *args)
+        Gate.__init__(self, 2, 8, *args)
 
     def _calc_output(self, in_states):
         return or_alg(in_states)
@@ -112,7 +109,7 @@ class NOT(Gate):
 
 class NAND(Gate):
     def __init__(self, *args):
-        Gate.__init__(self, 2, None, *args)
+        Gate.__init__(self, 2, 8, *args)
 
     def _calc_output(self, in_states):
         temp = and_alg(in_states)
@@ -121,7 +118,7 @@ class NAND(Gate):
 
 class NOR(Gate):
     def __init__(self, *args):
-        Gate.__init__(self, 2, None, *args)
+        Gate.__init__(self, 2, 8, *args)
 
     def _calc_output(self, in_states):
         temp = or_alg(in_states)
@@ -130,7 +127,7 @@ class NOR(Gate):
 
 class XOR(Gate):
     def __init__(self, *args):
-        Gate.__init__(self, 2, None, *args)
+        Gate.__init__(self, 2, 8, *args)
 
     def _calc_output(self, in_states):
         return xor_alg(in_states)
@@ -138,7 +135,7 @@ class XOR(Gate):
 
 class XNOR(Gate):
     def __init__(self, *args):
-        Gate.__init__(self, 2, None, *args)
+        Gate.__init__(self, 2, 8, *args)
 
     def _calc_output(self, in_states):
         temp = xor_alg(in_states)
