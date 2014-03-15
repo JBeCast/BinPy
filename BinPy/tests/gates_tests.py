@@ -11,9 +11,9 @@ def AND_test():
     outputLogic = []
 
     for logic in inputLogic:
-        c[1].set(logic[0])
-        c[2].set(logic[1])
-        outputLogic.append(c[0].state)
+        c[0].set(logic[0])
+        c[1].set(logic[1])
+        outputLogic.append(c[2].state)
     assert outputLogic == [0, 0, 1, 0, 0, 0, 3, 3]
 
 def OR_test():
@@ -22,9 +22,9 @@ def OR_test():
     outputLogic = []
 
     for logic in inputLogic:
-        c[1].set(logic[0])
-        c[2].set(logic[1])
-        outputLogic.append(c[0].state)
+        c[0].set(logic[0])
+        c[1].set(logic[1])
+        outputLogic.append(c[2].state)
     assert outputLogic == [0, 1, 1, 1, 3, 3, 1, 1]
 
 def NAND_test():
@@ -34,9 +34,9 @@ def NAND_test():
     outputLogic = []
 
     for logic in inputLogic:
-        c[1].set(logic[0])
-        c[2].set(logic[1])
-        outputLogic.append(g.output.state)
+        c[0].set(logic[0])
+        c[1].set(logic[1])
+        outputLogic.append(g.output())
     assert outputLogic == [1, 1, 0, 1, 1, 1, 3, 3]
 
 def NOR_test():
@@ -45,9 +45,9 @@ def NOR_test():
     outputLogic = []
 
     for logic in inputLogic:
-        c[1].set(logic[0])
-        c[2].set(logic[1])
-        outputLogic.append(c[0].state)
+        c[0].set(logic[0])
+        c[1].set(logic[1])
+        outputLogic.append(c[2].state)
     assert outputLogic == [1, 0, 0, 0, 3, 3, 0, 0]
 
 def XOR_test():
@@ -56,9 +56,9 @@ def XOR_test():
     outputLogic = []
 
     for logic in inputLogic:
-        c[1].set(logic[0])
-        c[2].set(logic[1])
-        outputLogic.append(c[0].state)
+        c[0].set(logic[0])
+        c[1].set(logic[1])
+        outputLogic.append(c[2].state)
     assert outputLogic == [0, 1, 0, 1, 3, 3, 3, 3]
 
 def XNOR_test():
@@ -67,9 +67,9 @@ def XNOR_test():
     outputLogic = []
 
     for logic in inputLogic:
-        c[1].set(logic[0])
-        c[2].set(logic[1])
-        outputLogic.append(c[0].state)
+        c[0].set(logic[0])
+        c[1].set(logic[1])
+        outputLogic.append(c[2].state)
     assert outputLogic == [1, 0, 1, 0, 3, 3, 3, 3]
 
 def NOT_test():
@@ -79,8 +79,8 @@ def NOT_test():
     outputLogic = []
 
     for logic in inputLogic:
-        c[1].set(logic)
-        outputLogic.append(c[0].state)
+        c[0].set(logic)
+        outputLogic.append(c[1].state)
     assert outputLogic == [1, 0, 3, 3]
 
 def connection_test():
@@ -89,11 +89,12 @@ def connection_test():
     for i in range(4):
         c2 = c[i:] + c[:i]
         g.connect(*c2)
-        assert c2[0].connections['output'] == [g]
-        for j in range(1,4):
+        assert c2[3].connections['output'] == [g]
+        for j in range(0,3):
             assert c2[j].connections['input'] == [g]
-        assert g.output == c2[0]
-        assert g.inputs == c2[1:4]
+            assert not c2[j].connections['output']
+        assert g.output == c2[3]
+        assert g.inputs == c2[0:3]
     g.disconnect()
     for i in range(4):
         assert not c[i].connections['input']
