@@ -12,6 +12,8 @@ class Gate(object):
         self.name = ''
         self.inputs = []
         self.output = None
+        self._min_inputs = min_inputs
+        self._max_inputs = max_inputs
         self._check_args()
         self.connect(*self._args)
 
@@ -19,7 +21,6 @@ class Gate(object):
         if isinstance(self._args[0], str):
             self.name = self._args[0]
             self._args = self._args[1:]
-            print self._args
         for i in self._args:
             is_connector(i)
 
