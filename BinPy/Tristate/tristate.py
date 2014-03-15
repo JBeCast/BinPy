@@ -14,7 +14,15 @@ class Buffer(Gate):
 
 # Useful to implement output enable in ICs
 class Bus(object):
-    pass
+    def __init__(self, *args):
+        self.b = None
+        self._args = args
+        self.inputs = []
+        self.outputs = []
+        self._check_args()
+
+    def _check_args(self):
+        pass
 
 
 
