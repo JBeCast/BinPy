@@ -12,12 +12,11 @@ class Gate(object):
         self.name = name
         self.output = None
         self.inputs = []
-        self.in_states = []
         self.connect(*taps)
 
     def trigger(self):
-        self.in_states = [i() for i in self.inputs]
-        out_state = self._calc_output(self.in_states)
+        in_states = [i() for i in self.inputs]
+        out_state = self._calc_output(in_states)
         if out_state != self.output():
             self.output.set(out_state)
 
@@ -52,13 +51,6 @@ class Gate(object):
                 self.inputs[i].connections['output'].remove(self)
         self.inputs = []
         self.output = None
-
-    def getStates(self):
-        return {'inputs': self.in_states, 'output': self.output()}
-
-    def getTaps(self):
-        return {'inputs': [i.name for i in self.inputs],
-                'output': self.output.name}
 
     def info(self):
         print "inputs:", ["%s(%d)" %(i.name, i()) for i in self.inputs]
