@@ -50,6 +50,9 @@ class Gate(object):
                 i.connections['input'].remove(self)
         self._taps = []
 
+    def __call__(self):
+        return self._taps[-1]()
+
     def info(self):
         print "inputs:", ["%s(%d)" %(i.name, i()) for i in self._taps[:-1]]
         print "output:", "%s(%d)" %(self._taps[-1].name, self._taps[-1]())
