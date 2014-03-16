@@ -10,8 +10,6 @@ class Gate(object):
     def __init__(self, min_inputs, max_inputs, *args):
         self._taps = list(args)
         self.name = ''
-        self.inputs = []
-        self.output = None
         self._min_inputs = min_inputs
         self._max_inputs = max_inputs
         self._check_taps()
@@ -25,25 +23,22 @@ class Gate(object):
             is_connector(i)
 
     def trigger(self):
-        in_states = [i() for i in self.inputs]
+        in_states = [i() for i in self._taps[:-1]]
         out_state = self._calc_output(in_states)
-        if out_state != self.output():
-            self.output.set(out_state)
+        if out_state != self._taps[-1]():
+            self._taps[-1].set(out_state)
 
     def connect(self, *taps):
         taps = list(taps)
-        inputs = taps[:-1]
-        output = taps[-1]
-        if output in inputs:
-            raise Exception("Feedback not allowed")
-        if not self._min_inputs <= len(inputs) <= self._max_inputs:
-            raise Exception("Wrong number of inputs provided")
-        self.disconnect()
+        if taps[-1] in taps[:-1]:
+            raise Exception("Gate feedback not allowed")
+        if not self._min_inputs <= len(taps[:-1]) <= self._max_inputs:
+            raise Exception("Unexpected number of inputs")
+        if taps != self._taps:
+            self.disconnect()
         self._taps = taps
-        self.inputs = inputs
-        self.output = output
-        output.tap(self, 'output')
-        for i in inputs:
+        self._taps[-1].tap(self, 'output')
+        for i in self._taps[:-1]:
             i.tap(self, 'input')
         self.trigger()
 
@@ -53,12 +48,11 @@ class Gate(object):
                 i.connections['output'].remove(self)
             if self in i.connections['input']:
                 i.connections['input'].remove(self)
-        self.inputs = []
-        self.output = None
+        self._taps = []
 
     def info(self):
-        print "inputs:", ["%s(%d)" %(i.name, i()) for i in self.inputs]
-        print "output:", "%s(%d)" %(self.output.name, self.output())
+        print "inputs:", ["%s(%d)" %(i.name, i()) for i in self._taps[:-1]]
+        print "output:", "%s(%d)" %(self._taps[-1].name, self._taps[-1]())
 
 
 # GATE ALGORITHMS
