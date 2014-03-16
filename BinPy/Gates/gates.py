@@ -8,20 +8,20 @@ class Gate(object):
     """
 
     def __init__(self, min_inputs, max_inputs, *args):
-        self._args = list(args)
+        self._taps = list(args)
         self.name = ''
         self.inputs = []
         self.output = None
         self._min_inputs = min_inputs
         self._max_inputs = max_inputs
-        self._check_args()
-        self.connect(*self._args)
+        self._check_taps()
+        self.connect(*self._taps)
 
-    def _check_args(self):
-        if isinstance(self._args[0], str):
-            self.name = self._args[0]
-            self._args = self._args[1:]
-        for i in self._args:
+    def _check_taps(self):
+        if isinstance(self._taps[0], str):
+            self.name = self._taps[0]
+            self._taps = self._taps[1:]
+        for i in self._taps:
             is_connector(i)
 
     def trigger(self):
@@ -31,13 +31,15 @@ class Gate(object):
             self.output.set(out_state)
 
     def connect(self, *taps):
-        inputs = list(taps)[:-1]
-        output = list(taps)[-1]
+        taps = list(taps)
+        inputs = taps[:-1]
+        output = taps[-1]
         if output in inputs:
             raise Exception("Feedback not allowed")
         if not self._min_inputs <= len(inputs) <= self._max_inputs:
             raise Exception("Wrong number of inputs provided")
         self.disconnect()
+        self._taps = taps
         self.inputs = inputs
         self.output = output
         output.tap(self, 'output')
@@ -46,23 +48,17 @@ class Gate(object):
         self.trigger()
 
     def disconnect(self):
-        if not self.output is None:
-            if self in self.output.connections['output']:
-                self.output.connections['output'].remove(self)
-            if self in self.output.connections['input']:
-                self.output.connections['input'].remove(self)
-        for i in range(len(self.inputs)):
-            if self in self.inputs[i].connections['input']:
-                self.inputs[i].connections['input'].remove(self)
-            if self in self.inputs[i].connections['output']:
-                self.inputs[i].connections['output'].remove(self)
+        for i in self._taps:
+            if self in i.connections['output']:
+                i.connections['output'].remove(self)
+            if self in i.connections['input']:
+                i.connections['input'].remove(self)
         self.inputs = []
         self.output = None
 
     def info(self):
         print "inputs:", ["%s(%d)" %(i.name, i()) for i in self.inputs]
         print "output:", "%s(%d)" %(self.output.name, self.output())
-
 
 
 # GATE ALGORITHMS

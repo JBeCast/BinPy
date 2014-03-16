@@ -10,7 +10,7 @@ class Connector:
     def tap(self, element, mode):
         if element not in self.connections[mode]:
             self.connections[mode].append(element)
-        if self not in element.inputs and self != element.output:
+        if self not in element._taps:
             if mode == 'input':
                 element.connect(element.output, element.inputs + self)
             elif mode == 'output':
