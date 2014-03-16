@@ -36,7 +36,7 @@ def NAND_test():
     for logic in inputLogic:
         c[0].set(logic[0])
         c[1].set(logic[1])
-        outputLogic.append(g.output())
+        outputLogic.append(g())
     assert outputLogic == [1, 1, 0, 1, 1, 1, 3, 3]
 
 def NOR_test():
@@ -93,8 +93,8 @@ def connection_test():
         for j in range(0,3):
             assert c2[j].connections['input'] == [g]
             assert not c2[j].connections['output']
-        assert g.output == c2[3]
-        assert g.inputs == c2[0:3]
+        assert g._taps[-1] == c2[3]
+        assert g._taps[:-1] == c2[0:3]
     g.disconnect()
     for i in range(4):
         assert not c[i].connections['input']
