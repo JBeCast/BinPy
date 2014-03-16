@@ -57,6 +57,13 @@ class Gate(object):
         print "inputs:", ["%s(%d)" %(i.name, i()) for i in self._taps[:-1]]
         print "output:", "%s(%d)" %(self._taps[-1].name, self._taps[-1]())
 
+    def setInputs(self, *states):
+        states = list(states)
+        if len(states) != len(self._taps[:-1]):
+            raise Exception("%d values expected" % len(self._taps[:-1]))
+        for i in range(len(states)):
+            self._taps[i].set(states[i])
+
 
 # GATE ALGORITHMS
 
