@@ -24,6 +24,7 @@ class Gate(object):
 
     def trigger(self):
         in_states = [i() for i in self._taps[:-1]]
+        if len(in_states) == 1: in_states = in_states[0]
         out_state = self._logic(in_states)
         if out_state != self._taps[-1]():
             self._taps[-1].set(out_state)
@@ -84,8 +85,8 @@ def xor_logic(inputs):
     else:
         return 1 if inputs.count(1) % 2 else 0
 
-def not_logic(inputs):
-    return abs(inputs[0]-1) if inputs[0] in (0, 1) else 3
+def not_logic(input):
+    return abs(input-1) if input in (0, 1) else 3
 
 def nand_logic(inputs):
     return not_logic(and_logic(inputs))
