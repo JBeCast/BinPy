@@ -7,7 +7,8 @@ class Gate(object):
     Parent class for every logic gate.
     """
 
-    def __init__(self, min_inputs, max_inputs, *args):
+    def __init__(self, logic, min_inputs, max_inputs, *args):
+        self._logic = logic
         self._taps = list(args)
         self.name = ''
         self._min_inputs = min_inputs
@@ -19,12 +20,11 @@ class Gate(object):
         if isinstance(self._taps[0], str):
             self.name = self._taps[0]
             self._taps = self._taps[1:]
-        for i in self._taps:
-            is_connector(i)
+        is_connector(*self._taps)
 
     def trigger(self):
         in_states = [i() for i in self._taps[:-1]]
-        out_state = self._calc_output(in_states)
+        out_state = self._logic(in_states)
         if out_state != self._taps[-1]():
             self._taps[-1].set(out_state)
 
@@ -65,78 +65,55 @@ class Gate(object):
             self._taps[i].set(states[i])
 
 
-# GATE ALGORITHMS
+# Logic functions
 
-def and_alg(inputs):
+def and_logic(inputs):
     if 0 in inputs: return 0
     elif inputs.count(1) == len(inputs): return 1
     else: return 3
 
-def or_alg(inputs):
+def or_logic(inputs):
     if 1 in inputs: return 1
     elif inputs.count(0) == len(inputs): return 0
     else: return 3
 
-def xor_alg(inputs):
+def xor_logic(inputs):
     if 2 in inputs or 3 in inputs: return 3
     else:
         return 1 if inputs.count(1) % 2 else 0
 
+def not_logic(input):
+    return abs(input-1) if input in (0, 1) else 3
 
-class AND(Gate):
-    def __init__(self, *args):
-        Gate.__init__(self, 2, 8, *args)
+def nand_logic(inputs):
+    return not_logic(and_logic(inputs))
 
-    def _calc_output(self, in_states):
-        return and_alg(in_states)
+def nor_logic(inputs):
+    return not_logic(or_logic(inputs))
 
-
-class OR(Gate):
-    def __init__(self, *args):
-        Gate.__init__(self, 2, 8, *args)
-
-    def _calc_output(self, in_states):
-        return or_alg(in_states)
+def xnor_logic(inputs):
+    return not_logic(xor_logic(inputs))
 
 
-class NOT(Gate):
-    def __init__(self, *args):
-        Gate.__init__(self, 1, 1, *args)
+# Gate generating functions
 
-    def _calc_output(self, in_states):
-        return abs(in_states[0]-1) if in_states[0] in (0,1) else 3
+def AND(*args):
+    return Gate(and_logic, 2, 8, *args)
 
+def OR(*args):
+    return Gate(or_logic, 2, 8, *args)
 
-class NAND(Gate):
-    def __init__(self, *args):
-        Gate.__init__(self, 2, 8, *args)
+def XOR(*args):
+    return Gate(xor_logic, 2, 8, *args)
 
-    def _calc_output(self, in_states):
-        temp = and_alg(in_states)
-        return abs(temp-1) if temp in (0,1) else temp
+def NAND(*args):
+    return Gate(nand_logic, 2, 8, *args)
 
+def NOR(*args):
+    return Gate(nor_logic, 2, 8, *args)
 
-class NOR(Gate):
-    def __init__(self, *args):
-        Gate.__init__(self, 2, 8, *args)
+def XNOR(*args):
+    return Gate(xnor_logic, 2, 8, *args)
 
-    def _calc_output(self, in_states):
-        temp = or_alg(in_states)
-        return abs(temp-1) if temp in (0,1) else temp
-
-
-class XOR(Gate):
-    def __init__(self, *args):
-        Gate.__init__(self, 2, 8, *args)
-
-    def _calc_output(self, in_states):
-        return xor_alg(in_states)
-
-
-class XNOR(Gate):
-    def __init__(self, *args):
-        Gate.__init__(self, 2, 8, *args)
-
-    def _calc_output(self, in_states):
-        temp = xor_alg(in_states)
-        return abs(temp-1) if temp in (0,1) else temp
+def NOT(*args):
+    return Gate(not_logic, 1, 1, *args)
