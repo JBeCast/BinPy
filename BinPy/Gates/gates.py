@@ -4,7 +4,16 @@ from BinPy.Gates.connector import *
 class Gate(object):
 
     """
-    Parent class for every logic gate.
+    This class creates any logic gate based on the received arguments.
+     Parameters:
+        logic: a function that takes the input states (integers) and
+        returns the output state (also an integer). Input and output
+        states must be valid: 0, 1, 2 or 3.
+        min_inputs: minimum number of inputs expected.
+        max_inputs: maximum number of inputs expected.
+        *args: an optional string (gate's name), a number of Connector
+        class instances between min_inputs and max_inputs (the gate's
+        inputs) and a last instance for the output.
     """
 
     def __init__(self, logic, min_inputs, max_inputs, *args):
@@ -23,6 +32,10 @@ class Gate(object):
         is_connector(*self._taps)
 
     def trigger(self):
+        """
+        Calls the _logic function to calculate the output state.
+        Triggers the output connector if the output has changed.
+        """
         in_states = [i() for i in self._taps[:-1]]
         if len(in_states) == 1: in_states = in_states[0]
         out_state = self._logic(in_states)
@@ -30,6 +43,12 @@ class Gate(object):
             self._taps[-1].set(out_state)
 
     def connect(self, *taps):
+        """
+        Takes a number of Connector class instances between min_inputs
+        and max_inputs (the gate's inputs) and a last instance for the
+        output and connects them to the gate.
+        Warning: every previous connection will be lost.
+        """
         taps = list(taps)
         if taps[-1] in taps[:-1]:
             raise Exception("Gate feedback not allowed")
@@ -44,6 +63,12 @@ class Gate(object):
         self.trigger()
 
     def disconnect(self):
+        """
+        Removes every connection, updating both the gate and the
+        connectors.
+        Warning: this method will render the gate useless, call it
+        want to cleanly remove it from the circuit.
+        """
         for i in self._taps:
             if self in i.connections['output']:
                 i.connections['output'].remove(self)
@@ -55,12 +80,22 @@ class Gate(object):
         return self._taps[-1]()
 
     def getTaps(self):
+        """
+        Returns the names of the connectors tapped into the gate.
+        """
         return [i.name for i in self._taps]
 
     def getStates(self):
+        """
+        Returns the states of the input and output connectors.
+        """
         return [i() for i in self._taps]
 
     def setInputs(self, *states):
+        """
+        Takes as many valid states as input connectors the gate has
+        and changes their states to the ones provided.
+        """
         states = list(states)
         if len(states) != len(self._taps[:-1]):
             raise Exception("%d values expected" % len(self._taps[:-1]))
