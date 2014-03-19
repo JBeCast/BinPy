@@ -66,8 +66,9 @@ class Gate(object):
         """
         Removes every connection, updating both the gate and the
         connectors.
-        Warning: this method will render the gate useless, call it
-        want to cleanly remove it from the circuit.
+        Warning: this method will render the gate useless, call it if
+        you want to cleanly remove it from the circuit. Provide new
+        connectors with the connect method to use it again.
         """
         for i in self._taps:
             if self in i.connections['output']:
