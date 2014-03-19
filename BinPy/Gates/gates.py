@@ -53,9 +53,11 @@ class Gate(object):
     def __call__(self):
         return self._taps[-1]()
 
-    def info(self):
-        print "inputs:", ["%s(%d)" %(i.name, i()) for i in self._taps[:-1]]
-        print "output:", "%s(%d)" %(self._taps[-1].name, self._taps[-1]())
+    def getTaps(self):
+        return [i.name for i in self._taps]
+
+    def getStates(self):
+        return [i() for i in self._taps]
 
     def setInputs(self, *states):
         states = list(states)
@@ -82,8 +84,8 @@ def xor_logic(inputs):
     else:
         return 1 if inputs.count(1) % 2 else 0
 
-def not_logic(input):
-    return abs(input-1) if input in (0, 1) else 3
+def not_logic(inputs):
+    return abs(inputs[0]-1) if inputs[0] in (0, 1) else 3
 
 def nand_logic(inputs):
     return not_logic(and_logic(inputs))
