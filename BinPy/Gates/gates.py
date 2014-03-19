@@ -4,7 +4,7 @@ from BinPy.Gates.connector import *
 class Gate(object):
 
     """
-    Base Class implementing all common functions used by Logic gates
+    Parent class for every logic gate.
     """
 
     def __init__(self, min_inputs, max_inputs, *args):
